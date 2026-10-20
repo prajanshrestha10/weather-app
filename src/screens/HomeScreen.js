@@ -11,15 +11,16 @@ import {debounce} from 'lodash';
 import { fetchLocations, fetchWeatherForecast } from '../api/weather.js';
 import { weatherImages } from '../constants/index.js';
 import * as Progress from 'react-native-progress';
+import { getData, storeData } from '../utils/asyncStorage.js';
 
 export default function HomeScreen() {
   const [showSearch, toggleSearch] = useState(false);
   const [locations, setLocations] = useState([]);
   const [weather, setWeather] = useState({});
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(true);
 
   const handleLocation = (loc) => {
-    // setLoader(true);
+    setLoader(true);
     setLocations([]);
     toggleSearch(false);
 
@@ -28,9 +29,10 @@ export default function HomeScreen() {
         days: '7'
     }).then((data) => {
         setWeather(data);
-        // setTimeout(() => {
-        //     setLoader(false);
-        // }, 3000);
+        setTimeout(() => {
+            setLoader(false);
+        }, 3000);
+        storeData('city', loc.name);
     });
   }
   
@@ -48,22 +50,23 @@ export default function HomeScreen() {
 
   const { current, location } = weather;
 
-//   useEffect(() => {
-//     fetchMyWeatherData();
-//   });
+  useEffect(() => {
+    fetchMyWeatherData();
+  }, []);
 
-//   const fetchMyWeatherData = async () => {
-//     await fetchWeatherForecast({
-//         cityName: 'Chicago',
-//         days: '7'
-//     })
-//     .then((data) => {
-//         setWeather(data);
-//         // setTimeout(() => {
-//         //     setLoader(false);
-//         // }, 3000);
-//     });
-//   }
+  const fetchMyWeatherData = async () => {
+    let myCity = await getData('city');
+    await fetchWeatherForecast({
+        cityName: myCity ?? 'Chicago',
+        days: '7'
+    })
+    .then((data) => {
+        setWeather(data);
+        setTimeout(() => {
+            setLoader(false);
+        }, 3000);
+    });
+  }
 
   return (
     <View className="flex-1 relative">
@@ -71,8 +74,8 @@ export default function HomeScreen() {
         <Image blurRadius={70} source={BgImage} className="absolute h-full w-full" />
         {
             loader ?
-            <View className="text-white text-lg">
-                <Text>Loading...</Text>
+            <View className="flex-1 lex-row justify-center items-center">
+                <Progress.CircleSnail thickness={10} size={140} color='#0bb3b2' />
             </View>
             :
             <SafeAreaView className="flex flex-1">
@@ -178,7 +181,7 @@ export default function HomeScreen() {
                         <View className='flex-row gap-2 items-center'>
                             <Image source={require('../../assets/weather-app-assets/icons/sun.png')} className='h-6 w-6' />
                             <Text className='text-white font-semibold text-base'>
-                                6:05 AM
+                                {weather?.forecast?.forecastday[0]?.astro?.sunrise}
                             </Text>
                         </View>
                     </View>
@@ -198,13 +201,6 @@ export default function HomeScreen() {
                         {
                             weather?.forecast?.forecastday
                             ? weather?.forecast?.forecastday?.map((item, index) => {
-                                // const dateString = item?.date;
-                                // console.log(item?.date, typeof dateString);
-                                // // Replace hyphens with slashes so JS parses it as local time
-                                // const fixedDateString = dateString.replace(/-/g, '/');
-                                // const date = new Date(fixedDateString);
-                                // const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-
                                 const dateString = item?.date;
 
                                 let dayName = '';
@@ -231,6 +227,7 @@ export default function HomeScreen() {
                                             }  
                                             className='h-11 w-11'
                                         />
+                                        {/* <Text className='text-white text-center w-full'>{item?.date}</Text> */}
                                         <Text className='text-white text-center w-full'>{dayName}</Text>
                                         <Text className='text-white text-xl font-semibold text-center w-full'>{item?.day?.avgtemp_f}&#176;</Text>
                                     </View>
