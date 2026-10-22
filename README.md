@@ -97,10 +97,12 @@ Weather App
 ## 🔗 YouTube Link(s)
 
 * *Weather App Overview - https://youtu.be/isbljCTy2Dk*
+* *Weather App Code Walkthrough - https://youtu.be/7KOE1IzKkPw*
 
 ## 💼 LinkedIn Post Link(s)
 
 * *Weather App Overview - https://www.linkedin.com/feed/update/urn:li:activity:7519080048075702272/*
+* *Weather App Code Walkthrough - https://www.linkedin.com/feed/update/urn:li:activity:7519119351652749312/*
 
 ## 📄 License
 
