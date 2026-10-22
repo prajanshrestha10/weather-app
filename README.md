@@ -96,11 +96,11 @@ Weather App
 
 ## 🔗 YouTube Link(s)
 
-* *[Link Here]*
+* *Weather App Overview - https://youtu.be/isbljCTy2Dk*
 
 ## 💼 LinkedIn Post Link(s)
 
-* *[Link Here]*
+* *Weather App Overview - https://www.linkedin.com/feed/update/urn:li:activity:7519080048075702272/*
 
 ## 📄 License
 
